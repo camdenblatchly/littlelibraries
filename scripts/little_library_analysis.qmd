@@ -1,0 +1,126 @@
+---
+title: "little_library_analysis"
+format: html
+editor: visual
+---
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(here)
+library(lubridate)
+
+i_am("scripts/little_library_analysis.qmd")
+
+```
+
+
+```{r}
+
+dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_18.csv"))
+
+```
+
+### Most popular categories
+
+```{r}
+
+most_popular_book_categories <- dta_raw %>%
+  group_by(categories) %>%
+  summarize(count = n()) %>%
+  mutate(percent = count / sum(count) * 100)
+
+
+```
+
+
+### Typical published date
+
+```{r}
+
+fig <- dta_raw %>%
+  mutate(
+    publish_date =  ymd(publish_date),
+    publish_year = year(publish_date),
+    decade = floor(publish_year / 10) * 10 
+  ) %>%
+  count(decade) %>%
+  ggplot(aes(x = decade, y = n)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Books Published by decade",
+    x = "Year",
+    y = "Number of Books"
+  ) +
+  theme_minimal()
+
+fig
+
+```
+
+### Most common publishers
+
+```{r}
+
+most_common_publishers <- dta_raw %>%
+  mutate(
+    publisher = stringr::str_replace_all(publisher, "(?i)Books", ""),
+    publisher = stringr::str_replace_all(publisher, "&amp;", "and"),
+    publisher = stringr::str_replace_all(publisher, "Co\\.", "Company"),
+    publisher = stringr::str_trim(publisher)
+  ) %>%
+  group_by(publisher) %>%
+  summarize(count = n()) %>%
+  mutate(percent = count / sum(count) * 100)
+
+```
+
+
+### Typical length
+
+```{r}
+
+fig <- ggplot(dta_raw, aes(x = length)) +
+  geom_histogram(binwidth = 50, fill = "steelblue", color = "white") +
+  labs(
+    title = "Histogram of Book Page Lengths",
+    x = "Number of Pages",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+fig
+
+```
+
+
+### Most common subjects
+
+```{r}
+
+subjects_clean <- dta_raw %>%
+  select(ean_isbn13, title, subjects) %>%
+  separate_rows(subjects, sep = ",\\s*") %>%
+  mutate(
+    subjects_clean = stringr::str_replace_all(subjects, "/", " and "),
+    subjects_clean = stringr::str_replace_all(subjects_clean, "&", "and"),
+    subjects_clean = stringr::str_replace_all(subjects_clean, "\\.", ""),
+    subjects_clean = stringr::str_replace_all(subjects_clean, "- General", "")
+  ) %>%
+  separate_rows(subjects_clean, sep = "\\s*--\\s*") %>%
+  mutate(
+    subjects_clean = stringr::str_squish(subjects_clean)
+  ) %>%
+  select(title, subjects_clean) %>%
+  distinct()
+
+subject_counts <- subjects_clean %>%
+  group_by(subjects_clean) %>%
+  summarise(
+    count = n()
+  )
+
+```
