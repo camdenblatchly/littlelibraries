@@ -20,7 +20,7 @@ i_am("scripts/little_library_analysis.qmd")
 
 ```{r}
 
-dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_18.csv"))
+dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_19.csv"))
 
 ```
 
@@ -32,6 +32,22 @@ most_popular_book_categories <- dta_raw %>%
   group_by(categories) %>%
   summarize(count = n()) %>%
   mutate(percent = count / sum(count) * 100)
+
+fig <- most_popular_book_categories %>%
+  filter(!is.na(categories)) %>%
+  arrange(desc(count)) %>%
+  slice_max(count, n = 15) %>%
+  ggplot(aes(x = count, y = reorder(categories, count))) +
+  geom_col(fill = "steelblue") +
+  geom_text(aes(label = count), hjust = -0.1, size = 3) +
+  labs(
+    title = "Most popular genres",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+fig
 
 
 ```
@@ -45,11 +61,15 @@ fig <- dta_raw %>%
   mutate(
     publish_date =  ymd(publish_date),
     publish_year = year(publish_date),
-    decade = floor(publish_year / 10) * 10 
+    decade = as.numeric(floor(publish_year / 10) * 10)
   ) %>%
   count(decade) %>%
   ggplot(aes(x = decade, y = n)) +
   geom_col(fill = "steelblue") +
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1, big.mark = ""),
+    n.breaks = 7
+  ) +
   labs(
     title = "Books Published by decade",
     x = "Year",
@@ -70,7 +90,8 @@ most_common_publishers <- dta_raw %>%
     publisher = stringr::str_replace_all(publisher, "(?i)Books", ""),
     publisher = stringr::str_replace_all(publisher, "&amp;", "and"),
     publisher = stringr::str_replace_all(publisher, "Co\\.", "Company"),
-    publisher = stringr::str_trim(publisher)
+    publisher = stringr::str_trim(publisher),
+    publisher = stringr::str_to_title(publisher)
   ) %>%
   group_by(publisher) %>%
   summarize(count = n()) %>%
