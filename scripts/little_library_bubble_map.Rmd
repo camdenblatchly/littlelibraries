@@ -1,0 +1,65 @@
+---
+title: "little_library_bubble_map"
+author: "Camden Blatchly"
+date: "2025-06-25"
+output: html_document
+---
+
+```{r}
+
+library(dplyr)
+library(tidyr)
+library(readr)
+library(here)
+library(sf)
+library(ggplot2)
+library(ggspatial)
+library(cori.charts)
+
+sysfonts::font_add_google("Lato")
+showtext::showtext_auto()
+showtext::showtext_opts(dpi = 300)
+
+i_am("scripts/little_library_bubble_map.Rmd")
+
+```
+
+```{r}
+
+map_dta <- st_read(here("data/little_libraries_size.geojson")) %>%
+  st_transform(3857) %>%
+  sf::st_as_sf()
+
+```
+
+```{r}
+
+bbox <- sf::st_bbox(map_dta)
+
+final_bbox <- fit_bbox_to_aspect_ratio(bbox)
+
+fig <- map_dta %>%
+  ggplot() +
+  annotation_map_tile(type = "cartolight", zoom = 14) +
+  geom_sf(aes(size = size), color = "#345d3b", alpha = 0.6) +
+  scale_size_continuous(range = c(1, 10)) +  # adjust bubble size range
+  labs(size = "Value", title = "Bubble Map") +
+  coord_sf(
+    crs = st_crs(3857),
+    xlim = c(final_bbox["xmin"], final_bbox["xmax"]),
+    ylim = c(final_bbox["ymin"], final_bbox["ymax"]),
+    expand = TRUE
+  ) +
+  theme_cori_map() +
+  labs(
+    title = "Little libraries I stopped at",
+    subtitle = "By collection size",
+    x = NULL,
+    y = NULL,
+    caption = "Map source: © CARTO, © OpenStreetMap contributors."
+  )
+
+save_plot(fig, here("export/little_libraries_size_map.svg"), add_logo = FALSE, chart_height = 7)
+save_plot(fig, here("export/little_libraries_size_map.png"), add_logo = FALSE, chart_height = 7)
+
+```
