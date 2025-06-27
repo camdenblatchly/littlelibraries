@@ -1,8 +1,7 @@
 ---
 title: "little_library_bubble_map"
-author: "Camden Blatchly"
-date: "2025-06-25"
-output: html_document
+format: html
+editor: visual
 ---
 
 ```{r}
