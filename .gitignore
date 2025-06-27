@@ -49,7 +49,7 @@ vignettes/*.pdf
 *.rds
 *.Rds
 
-# IDE files 
+# IDE files
 .DS_Store
 .idea
 
@@ -61,7 +61,7 @@ data/*
 
 export/*
 !export/README.md
-
+rosm.cache
 
 # Python files
 .ipynb_checkpoints
