@@ -13,6 +13,7 @@ library(ggplot2)
 library(here)
 library(lubridate)
 library(cori.charts)
+library(stringr)
 
 sysfonts::font_add_google("Lato")
 showtext::showtext_auto()
@@ -30,7 +31,7 @@ dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_20.csv"))
 
 ```
 
-### Most popular categories
+### Most popular categories/genres
 
 ```{r}
 
@@ -63,6 +64,30 @@ fig <- most_popular_book_categories %>%
   theme_cori_horizontal_bars()
 
 save_plot(fig, here("export/most_popular_genres.png"), add_logo = FALSE)
+save_plot(fig, here("export/most_popular_genres.svg"), add_logo = FALSE)
+
+```
+
+
+```{r}
+
+# How much do the little libraries near the high school
+# account for all the YA/Juvenile books
+
+libraries_near_high_school <- c(
+  "Ellery",
+  "Trowbridge",
+  "Cambridge",
+  "Ellsworth"
+)
+
+ya_near_high_school <- dta_raw %>%
+  filter(
+    str_detect(categories, "Juvenile") | str_detect(categories, "Young Adult") 
+  ) %>%
+  filter(collection %in% libraries_near_high_school)
+
+print(paste("There are ", nrow(ya_near_high_school), "YA and Juvenile books near CPLS"))
 
 ```
 
@@ -108,6 +133,7 @@ fig <- dta_raw %>%
   )
 
 save_plot(fig, here("export/books_by_decade.png"), add_logo = FALSE)
+save_plot(fig, here("export/books_by_decade.svg"), add_logo = FALSE)
 
 ```
 
@@ -143,18 +169,6 @@ fig <- ggplot(dta_raw, aes(x = length)) +
     n.breaks = 7,
     expand = expansion(mult = c(0, 0))
   ) +
-  # geom_text(
-  #   stat = "bin",
-  #   binwidth = 50,
-  #   aes(
-  #     label = after_stat(scales::label_comma(accuracy = 1)(count)),
-  #     y = after_stat(count)
-  #   ),
-  #   fontface = "bold",
-  #   family = "Lato",
-  #   size = 5,
-  #   vjust = -0.5
-  # ) +   
   theme_cori_horizontal_bars() +
   theme(
     axis.text.x = element_text(family = "Lato", colour = "black")
@@ -168,6 +182,14 @@ fig <- ggplot(dta_raw, aes(x = length)) +
   )
 
 save_plot(fig, here("export/page_length.png"), add_logo = FALSE)
+save_plot(fig, here("export/page_length.svg"), add_logo = FALSE)
+
+
+```
+
+### What's that really long book?
+
+```{r}
 
 
 ```

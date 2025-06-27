@@ -25,9 +25,17 @@ i_am("scripts/little_library_bubble_map.qmd")
 
 ```{r}
 
-map_dta <- st_read(here("data/little_libraries_size.geojson")) %>%
+map_dta <- st_read(here("data/little_libraries_size_v02.geojson")) %>%
   st_transform(3857) %>%
   sf::st_as_sf()
+
+```
+
+```{r}
+
+# Some summary stats for the piece
+print(paste("Median collection size: ", median(map_dta$size)))
+print(paste("Mean collection size: ", mean(map_dta$size)))
 
 ```
 
