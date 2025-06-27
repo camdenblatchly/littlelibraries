@@ -1,5 +1,5 @@
 ---
-title: "little_library_analysis"
+title: "little_library_analysis_viz"
 format: html
 editor: visual
 ---
@@ -18,7 +18,9 @@ sysfonts::font_add_google("Lato")
 showtext::showtext_auto()
 showtext::showtext_opts(dpi = 300)
 
-i_am("scripts/little_library_analysis.qmd")
+chart_color <- "#345d3b"
+
+i_am("scripts/little_library_analysis_viz.qmd")
 
 ```
 
@@ -40,19 +42,27 @@ most_popular_book_categories <- dta_raw %>%
 fig <- most_popular_book_categories %>%
   filter(!is.na(categories)) %>%
   arrange(desc(count)) %>%
-  slice_max(count, n = 15) %>%
+  slice_max(count, n = 10) %>%
   ggplot(aes(x = count, y = reorder(categories, count))) +
-  geom_col(fill = "steelblue") +
-  geom_text(aes(label = count), hjust = -0.1, size = 3) +
+  geom_col(fill = chart_color) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  geom_text(
+    aes(label = scales::comma(count, accuracy = 1)),
+    fontface = "bold",
+    hjust = -.4,
+    family = "Lato",
+    size = 5
+  ) +
   labs(
     title = "Most popular genres",
+    subtitle = "At Somerville-area little libraries",
     x = NULL,
-    y = NULL
+    y = NULL,
+    caption = "Source: Open Library & Google Books APIs"
   ) +
-  theme_minimal()
+  theme_cori_horizontal_bars()
 
-fig
-
+save_plot(fig, here("export/most_popular_genres.png"), add_logo = FALSE)
 
 ```
 
@@ -68,19 +78,36 @@ fig <- dta_raw %>%
   ) %>%
   count(decade) %>%
   ggplot(aes(x = decade, y = n)) +
-  geom_col(fill = "steelblue") +
+  geom_col(fill = chart_color) +
+  geom_text(
+    aes(label = scales::comma(n, accuracy = 1)),
+    fontface = "bold",
+    family = "Lato",
+    size = 5,
+    vjust = -.5
+  ) +  
+  scale_y_continuous(
+    labels = NULL,
+    expand = expansion(mult = c(0, .1))
+  ) +
   scale_x_continuous(
     labels = scales::label_number(accuracy = 1, big.mark = ""),
-    n.breaks = 7
+    n.breaks = 7,
+    expand = expansion(mult = c(0, 0))
   ) +
   labs(
-    title = "Books Published by decade",
-    x = "Year",
-    y = "Number of Books"
+    title = "Books published by decade",
+    subtitle = "For Somerville-area little libraries",
+    x = NULL,
+    y = NULL,
+    caption = "Source: Open Library & Google Books APIs"
   ) +
-  theme_minimal()
+  theme_cori_horizontal_bars() +
+  theme(
+    axis.text.x = element_text(family = "Lato", colour = "black")
+  )
 
-fig
+save_plot(fig, here("export/books_by_decade.png"), add_logo = FALSE)
 
 ```
 
@@ -105,44 +132,42 @@ most_common_publishers <- dta_raw %>%
 ### Typical length
 
 ```{r}
-
 fig <- ggplot(dta_raw, aes(x = length)) +
-  geom_histogram(binwidth = 50, fill = "steelblue", color = "white") +
-  labs(
-    title = "Histogram of Book Page Lengths",
-    x = "Number of Pages",
-    y = "Count"
+  geom_histogram(binwidth = 50, fill = chart_color, color = "white") +
+  scale_y_continuous(
+    labels = NULL,
+    expand = expansion(mult = c(0, .1))
   ) +
-  theme_minimal()
-
-fig
-
-```
-
-### Most common subjects
-
-```{r}
-
-subjects_clean <- dta_raw %>%
-  select(ean_isbn13, title, subjects) %>%
-  separate_rows(subjects, sep = ",\\s*") %>%
-  mutate(
-    subjects_clean = stringr::str_replace_all(subjects, "/", " and "),
-    subjects_clean = stringr::str_replace_all(subjects_clean, "&", "and"),
-    subjects_clean = stringr::str_replace_all(subjects_clean, "\\.", ""),
-    subjects_clean = stringr::str_replace_all(subjects_clean, "- General", "")
-  ) %>%
-  separate_rows(subjects_clean, sep = "\\s*--\\s*") %>%
-  mutate(
-    subjects_clean = stringr::str_squish(subjects_clean)
-  ) %>%
-  select(title, subjects_clean) %>%
-  distinct()
-
-subject_counts <- subjects_clean %>%
-  group_by(subjects_clean) %>%
-  summarise(
-    count = n()
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 1, big.mark = ""),
+    n.breaks = 7,
+    expand = expansion(mult = c(0, 0))
+  ) +
+  # geom_text(
+  #   stat = "bin",
+  #   binwidth = 50,
+  #   aes(
+  #     label = after_stat(scales::label_comma(accuracy = 1)(count)),
+  #     y = after_stat(count)
+  #   ),
+  #   fontface = "bold",
+  #   family = "Lato",
+  #   size = 5,
+  #   vjust = -0.5
+  # ) +   
+  theme_cori_horizontal_bars() +
+  theme(
+    axis.text.x = element_text(family = "Lato", colour = "black")
+  ) +
+  labs(
+    title = "Page length distribution",
+    subtitle = "For Somerville-area little libraries",
+    x = NULL,
+    y = NULL,
+    caption = "Source: Open Library & Google Books APIs"
   )
+
+save_plot(fig, here("export/page_length.png"), add_logo = FALSE)
+
 
 ```
