@@ -48,7 +48,7 @@ final_bbox <- fit_bbox_to_aspect_ratio(bbox)
 fig <- map_dta %>%
   ggplot() +
   annotation_map_tile(type = "cartolight", zoom = 14) +
-  geom_sf(aes(size = size), color = "#345d3b", alpha = 0.6) +
+  geom_sf(aes(size = size), color = "#8856a7", alpha = 0.6) +
   scale_size_continuous(range = c(1, 10)) +  # adjust bubble size range
   labs(size = "Value", title = "Bubble Map") +
   coord_sf(
@@ -59,8 +59,8 @@ fig <- map_dta %>%
   ) +
   theme_cori_map() +
   labs(
-    title = "Little libraries I stopped at",
-    subtitle = "By collection size",
+    title = "Somerville little libraries I catalogued",
+    subtitle = "Bubbles sized by collection size",
     x = NULL,
     y = NULL,
     caption = "Map source: © CARTO, © OpenStreetMap contributors."
