@@ -66,6 +66,9 @@ experimenting with both the Google Books and Open Library APIs.
 With each book’s ISBN from Libib, I pulled data from both APIS to build a 
 full dataset.
 
+I also learned how to create a custom geojson file using geojson.io. From this 
+file, I created a bubble map of the little libraries, scaled by their collection size.
+
 ## If I had more time...
 
 I’d initially considered building an interactive map to show each 
