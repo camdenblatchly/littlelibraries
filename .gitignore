@@ -53,12 +53,6 @@ vignettes/*.pdf
 .DS_Store
 .idea
 
-# Ignore everything in the data and export files
-# Except for README files
-
-data/*
-!data/README.md
-
 rosm.cache
 
 # Python files

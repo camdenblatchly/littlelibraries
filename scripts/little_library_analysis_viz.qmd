@@ -27,7 +27,7 @@ i_am("scripts/little_library_analysis_viz.qmd")
 
 ```{r}
 
-dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_20.csv"))
+dta_raw <- readr::read_csv(here("data/little_libraries_books_2025_06_27.csv"))
 
 ```
 
