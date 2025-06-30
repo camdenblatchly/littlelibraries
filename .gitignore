@@ -59,8 +59,6 @@ vignettes/*.pdf
 data/*
 !data/README.md
 
-export/*
-!export/README.md
 rosm.cache
 
 # Python files
