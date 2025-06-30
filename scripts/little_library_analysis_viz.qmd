@@ -160,7 +160,7 @@ most_common_publishers <- dta_raw %>%
 ```{r}
 
 fig <- ggplot(dta_raw, aes(x = length)) +
-  geom_histogram(binwidth = 50, fill = chart_color, color = "white") +
+  geom_histogram(binwidth = 50, center = 25, fill = chart_color, color = "white") +
   scale_y_continuous(
     labels = scales::label_number(accuracy = 1, big.mark = ","),
     expand = expansion(mult = c(0, .1))
@@ -173,10 +173,12 @@ fig <- ggplot(dta_raw, aes(x = length)) +
   theme_cori_horizontal_bars() +
   theme(
     axis.text.x = element_text(family = "Lato", colour = "black"),
+    axis.ticks.length.x = unit(8, "pt"),
+    axis.ticks.x = element_line(color = "#d0d2ce", linewidth = .25, linetype = "solid"),
     panel.grid.major.y = element_line(color = "#d0d2ce", linewidth = .25, linetype = "solid")
   ) +
   labs(
-    title = "Books typically numbered 300 pages, but some tomes were found",
+    title = "Books typically numbered around 300 pages",
     subtitle = "Number of books by page length, for 50 page bins",
     x = "Page length",
     y = NULL,
