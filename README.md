@@ -4,7 +4,7 @@ Scripts, data, and viz for a deep dive on Somerville little libraries.
 
 ## Data collection
 
-Over a two week period in June, I visited 15 plus Somerville-area little 
+Over a two week period in June, I visited 17 Somerville-area little 
 libraries. At each library, I used the Libib app to catalog the library's 
 collection by scanning barcodes, if present.
 
@@ -20,7 +20,7 @@ From the Google Books API, I pulled category (a better proxy for genre),
 language, and public domain status.
 
 Once the dataset was built, I exported it as a cleaned CSV for easy analysis and 
-visualization.
+visualization: `data/little_libraries_books_2025_06_27.csv`.
 
 ## Analysis and Visualization
 
@@ -41,7 +41,7 @@ At the outset of my analysis, I sought to answer the following questions.
 
 Ultimately, incomplete data limited my ability to tackle my 
 questions around public domain status and book format, while a small sample 
-size (172 books total) meant that conclusions around authors, language, and 
+size (191 books total) meant that conclusions around authors, language, and 
 publishers didn't pop enough to be included in my final story. The remaining 
 questions I answered in my piece.
 
@@ -52,24 +52,28 @@ questions I answered in my piece.
 noteworthy.  
 - Fiction was the most popular genre. Biography and Young Adult/Juvenile 
 fiction were common too.
-- Vintage was the most common publisher with 6 books. Penguin was second with 4.
+- Vintage was the most common publisher with 6 books.
 - Books were usually around 300 pages.  
-- Most books were in english with some one-offs in french and german.  
+- Most books were in English with some one-offs in French and German.  
 - The Willoughby St library had the biggest collection with 21 books.
+- Yes, there was a copy of the Girl with the Dragon Tattoo in one of the 
+little libraries.
 
 ## New skills and approaches
 
-I wanted to use this project to get more familiar with querying APIs using 
-Python. As such, I was excited to work with the Google Books and Open 
-Library APIs. Once I had the book's ISBN from Libib, I was able to query both 
-APIs to create a full dataset.
+I used this project to get more comfortable querying APIs in Python, 
+experimenting with both the Google Books and Open Library APIs. 
+With each book’s ISBN from Libib, I pulled data from both APIS to build a 
+full dataset.
 
 ## If I had more time...
 
-Initially, I thought this project would give me a chance to create an 
-interactive map to display the contents of each collection. In the end, I 
-ran out of time, but I think a slippy bubble map with a toolbar that 
-displayed each libraries' contents would be cool!
+I’d initially considered building an interactive map to show each 
+library’s collection (I was imagining a bubble map with a toolbar to explore 
+the titles) but I ran out of time. I also wanted to add chart annotations
+highlighting standout books, like the longest one by page count 
+or the oldest by publication date etc. I'm hoping I'll be able to eventually add 
+this last feature to help add some more life to the visualizations :)
 
 
 
